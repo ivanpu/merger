@@ -8,8 +8,8 @@ More features are planned:
 
 ## Planned features ##
 
-* user specified fields for comparison
-* user specified comparison type
-* user specified field separator
-* _optionally_ ignore quoted field separator
-* merge multiple files at once
+- [ ] user specified fields for comparison
+- [ ] user specified comparison type
+- [x] user specified field separator
+- [ ] _optionally_ ignore quoted field separator
+- [ ] merge multiple files at once
