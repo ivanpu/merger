@@ -68,7 +68,7 @@ int merger::Merger::count_separators( std::string const& str)
     if (in_string) {
       if (ch == '"') in_string = false;
 
-    } else if (ch == '"') {
+    } else if (ch == '"' && !ignore_quotes) {
 	in_string = true;
 
     } else if (ch == separator) {

@@ -11,5 +11,5 @@ More features are planned:
 - [ ] user specified fields for comparison
 - [ ] user specified comparison type
 - [x] user specified field separator
-- [ ] _optionally_ ignore quoted field separator
+- [x] _optionally_ ignore quoted field separator
 - [ ] merge multiple files at once

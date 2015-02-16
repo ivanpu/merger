@@ -23,7 +23,10 @@ void merge( boost::program_options::variables_map const& vm )
   left.exceptions( std::ifstream::badbit );
   right.exceptions( std::ifstream::badbit );
 
-  merger::Merger m{ vm["separator"].as<char>() };
+  merger::Merger m{
+    vm["separator"].as<char>(),
+    vm["ignore-quotes"].as<bool>()
+  };
 
   if (vm.count( "out" )) {
     // optional output file specified - using it as output
@@ -54,6 +57,7 @@ int main( int argc, char* argv[] )
       ( "help", "print this help message" )
       ( "version", "print program version" )
       ( "separator,s", po::value<char>()->default_value(','), "set separator" )
+      ( "ignore-quotes", po::value<bool>()->default_value(false), "no special treatment for quoted text" )
       ;
     po::options_description hidden{ "Hidden options" };
     hidden.add_options()

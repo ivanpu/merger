@@ -9,7 +9,10 @@ namespace merger {
 class Merger
 {
 public:
-  Merger( char sep ) : separator{ sep } {}
+  Merger( char sep, bool no_quotes )
+    : separator{ sep },
+      ignore_quotes{ no_quotes }
+    {}
 
   // merging of streams, using modified "merge-sort" algorithm:
   // "equal" lines will be merged into one
@@ -17,6 +20,7 @@ public:
 
 private:
   char separator;
+  char ignore_quotes;
 
   // compare the lines by first field, assuming it as time
   enum class Cmp { less, equal, greater };
