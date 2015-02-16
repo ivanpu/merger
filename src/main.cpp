@@ -6,7 +6,7 @@
 #include <string>
 
 // program version
-const auto version = "0.1";
+const auto version = "0.2alpha";
 
 void merge( boost::program_options::variables_map const& vm )
 {
