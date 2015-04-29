@@ -25,7 +25,7 @@ void merge( boost::program_options::variables_map const& vm )
 
   merger::Merger m{
     vm["separator"].as<char>(),
-    vm["ignore-quotes"].as<bool>()
+    vm.count( "ignore-quotes" ) > 0
   };
 
   if (vm.count( "out" )) {
@@ -54,16 +54,16 @@ int main( int argc, char* argv[] )
 
     po::options_description desc{ "Allowed options" };
     desc.add_options()
-      ( "help", "print this help message" )
-      ( "version", "print program version" )
-      ( "separator,s", po::value<char>()->default_value(','), "set separator" )
-      ( "ignore-quotes", po::value<bool>()->default_value(false), "no special treatment for quoted text" )
+      ("help,h", "print this help message")
+      ("version,v", "print program version")
+      ("ignore-quotes,q", "no special treatment for quoted text")
+      ("separator,s", po::value<char>()->default_value( ',' ), "set separator")
       ;
     po::options_description hidden{ "Hidden options" };
     hidden.add_options()
-      ( "left", po::value<std::string>(), "left file" )
-      ( "right", po::value<std::string>(), "right file" )
-      ( "out", po::value<std::string>(), "output file" )
+      ("left", po::value<std::string>(), "left file")
+      ("right", po::value<std::string>(), "right file")
+      ("out", po::value<std::string>(), "output file")
       ;
 
     po::options_description cmdline;
@@ -79,7 +79,7 @@ int main( int argc, char* argv[] )
     // check parameters
     if (vm.count( "help" )) {
       std::cout << "Usage:\n  " << name << " [OPTIONS] LEFT-FILE RIGHT-FILE [OUTPUT]\n\n"
-                << desc << std::endl;
+        << desc << std::endl;
       return 0;
     }
 

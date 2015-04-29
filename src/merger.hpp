@@ -6,33 +6,33 @@
 
 namespace merger {
 
-class Merger
-{
-public:
-  Merger( char sep, bool no_quotes )
-    : separator{ sep },
+  class Merger
+  {
+  public:
+    Merger( char sep, bool no_quotes ) :
+      separator{ sep },
       ignore_quotes{ no_quotes }
     {}
 
-  // merging of streams, using modified "merge-sort" algorithm:
-  // "equal" lines will be merged into one
-  void merge( std::istream &left, std::istream &right, std::ostream &out );
+    // merging of streams, using modified "merge-sort" algorithm:
+    // "equal" lines will be merged into one
+    void merge( std::istream &left, std::istream &right, std::ostream &out );
 
-private:
-  char separator;
-  char ignore_quotes;
+  private:
+    char separator;
+    bool ignore_quotes;
 
-  // compare the lines by first field, assuming it as time
-  enum class Cmp { less, equal, greater };
-  Cmp compare( std::string const&, std::string const& );
+    // compare the lines by first field, assuming it as time
+    enum class Cmp { less, equal, greater };
+    Cmp compare( std::string const&, std::string const& );
 
-  // counts number of separators, exulding the quoted ones
-  int count_separators( std::string const& );
-  
-  // generates string full of separators
-  std::string separators( std::size_t n )
+    // counts number of separators, exulding the quoted ones
+    int count_separators( std::string const& );
+
+    // generates string full of separators
+    std::string separators( std::size_t n )
     { return std::string( n, separator ); }
-};
+  };
 
 } // namespace merger
 

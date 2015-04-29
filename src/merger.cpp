@@ -3,7 +3,7 @@
 #include <istream>
 #include <ostream>
 
-void merger::Merger::merge( std::istream &left, std::istream &right, std::ostream &out)
+void merger::Merger::merge( std::istream &left, std::istream &right, std::ostream &out )
 {
   std::string l_line, r_line;
   getline( left, l_line );
@@ -59,7 +59,7 @@ auto merger::Merger::compare( std::string const& left, std::string const& right 
   return Cmp::greater;
 }
 
-int merger::Merger::count_separators( std::string const& str)
+int merger::Merger::count_separators( std::string const& str )
 {
   auto count = 0;
   auto in_string = false;
@@ -69,10 +69,10 @@ int merger::Merger::count_separators( std::string const& str)
       if (ch == '"') in_string = false;
 
     } else if (ch == '"' && !ignore_quotes) {
-	in_string = true;
+      in_string = true;
 
     } else if (ch == separator) {
-	++count;
+      ++count;
     }
   }
 
