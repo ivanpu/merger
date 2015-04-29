@@ -32,12 +32,12 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
 
     } else if (cmp == Cmp::less) {
       // left is previous in time - output only it
-      out << l_line << r_seps << "\n";
+      if (keep_empty) out << l_line << r_seps << "\n";
       getline( left, l_line );
 
     } else {
       // right is previous in time - output only it
-      out << l_seps << r_line << "\n";
+      if (keep_empty) out << l_seps << r_line << "\n";
       getline( right, r_line );
     }
   }

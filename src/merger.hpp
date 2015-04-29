@@ -9,10 +9,11 @@ namespace merger {
   class Merger
   {
   public:
-    Merger( char sep, bool no_quotes, bool sort_by_time, std::size_t header_length ) :
+    Merger( char sep, bool no_quotes, bool sort_by_time, bool drop_empty, std::size_t header_length ) :
       separator{ sep },
       ignore_quotes{ no_quotes },
       by_time{ sort_by_time },
+      keep_empty{ !drop_empty },
       header{ header_length }
     {}
 
@@ -22,7 +23,7 @@ namespace merger {
 
   private:
     char separator;
-    bool ignore_quotes, by_time;
+    bool ignore_quotes, by_time, keep_empty;
     std::size_t header;
 
     // compare the lines by first field
