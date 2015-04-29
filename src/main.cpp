@@ -25,7 +25,8 @@ void merge( boost::program_options::variables_map const& vm )
 
   merger::Merger m{
     vm["separator"].as<char>(),
-    vm.count( "ignore-quotes" ) > 0
+    vm.count( "ignore-quotes" ) > 0,
+    vm["header"].as<std::size_t>()
   };
 
   if (vm.count( "out" )) {
@@ -58,6 +59,7 @@ int main( int argc, char* argv[] )
       ("version,v", "print program version")
       ("ignore-quotes,q", "no special treatment for quoted text")
       ("separator,s", po::value<char>()->default_value( ',' ), "set separator")
+      ("header,H", po::value<std::size_t>()->default_value( 0 ), "size of the header (left header will also be copied to the output)")
       ;
     po::options_description hidden{ "Hidden options" };
     hidden.add_options()

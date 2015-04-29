@@ -9,9 +9,10 @@ namespace merger {
   class Merger
   {
   public:
-    Merger( char sep, bool no_quotes ) :
+    Merger( char sep, bool no_quotes, std::size_t header_length ) :
       separator{ sep },
-      ignore_quotes{ no_quotes }
+      ignore_quotes{ no_quotes },
+      header{ header_length }
     {}
 
     // merging of streams, using modified "merge-sort" algorithm:
@@ -21,6 +22,7 @@ namespace merger {
   private:
     char separator;
     bool ignore_quotes;
+    std::size_t header;
 
     // compare the lines by first field, assuming it as time
     enum class Cmp { less, equal, greater };

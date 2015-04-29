@@ -9,6 +9,13 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   getline( left, l_line );
   getline( right, r_line );
 
+  // skip && copy header
+  for (std::size_t i = 0; i < header; ++i) {
+    out << l_line << "\n";
+    getline( left, l_line );
+    getline( right, r_line );
+  }
+
   // using extra one comma as separator
   auto l_seps = separators( count_separators( l_line ) + 1 );
   auto r_seps = separators( count_separators( r_line ) + 1 );
