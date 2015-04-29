@@ -26,6 +26,7 @@ void merge( boost::program_options::variables_map const& vm )
   merger::Merger m{
     vm["separator"].as<char>(),
     vm.count( "ignore-quotes" ) > 0,
+    vm.count( "date" ) > 0,
     vm["header"].as<std::size_t>()
   };
 
@@ -58,6 +59,7 @@ int main( int argc, char* argv[] )
       ("help,h", "print this help message")
       ("version,v", "print program version")
       ("ignore-quotes,q", "no special treatment for quoted text")
+      ("date,d", "compare by date/time")
       ("separator,s", po::value<char>()->default_value( ',' ), "set separator")
       ("header,H", po::value<std::size_t>()->default_value( 0 ), "size of the header (left header will also be copied to the output)")
       ;

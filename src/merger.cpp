@@ -1,5 +1,6 @@
 #include "merger.hpp"
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/lexical_cast.hpp>
 #include <istream>
 #include <ostream>
 
@@ -56,14 +57,24 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
 
 auto merger::Merger::compare( std::string const& left, std::string const& right ) -> Cmp
 {
-  using boost::posix_time::duration_from_string;
+  if (by_time) {
+    using boost::posix_time::duration_from_string;
 
-  auto l_time = duration_from_string( left.substr( 0, left.find( separator ) ) );
-  auto r_time = duration_from_string( right.substr( 0, right.find( separator ) ) );
+    auto l_time = duration_from_string( left.substr( 0, left.find( separator ) ) );
+    auto r_time = duration_from_string( right.substr( 0, right.find( separator ) ) );
 
-  if (l_time == r_time) return Cmp::equal;
-  if (l_time < r_time) return Cmp::less;
-  return Cmp::greater;
+    if (l_time == r_time) return Cmp::equal;
+    if (l_time < r_time) return Cmp::less;
+    return Cmp::greater;
+
+  } else {
+    auto l_val = boost::lexical_cast<long>(left.substr( 0, left.find( separator ) ));
+    auto r_val = boost::lexical_cast<long>(right.substr( 0, right.find( separator ) ));
+
+    if (l_val == r_val) return Cmp::equal;
+    if (l_val < r_val) return Cmp::less;
+    return Cmp::greater;
+  }
 }
 
 int merger::Merger::count_separators( std::string const& str )

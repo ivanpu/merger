@@ -9,9 +9,10 @@ namespace merger {
   class Merger
   {
   public:
-    Merger( char sep, bool no_quotes, std::size_t header_length ) :
+    Merger( char sep, bool no_quotes, bool sort_by_time, std::size_t header_length ) :
       separator{ sep },
       ignore_quotes{ no_quotes },
+      by_time{ sort_by_time },
       header{ header_length }
     {}
 
@@ -21,10 +22,10 @@ namespace merger {
 
   private:
     char separator;
-    bool ignore_quotes;
+    bool ignore_quotes, by_time;
     std::size_t header;
 
-    // compare the lines by first field, assuming it as time
+    // compare the lines by first field
     enum class Cmp { less, equal, greater };
     Cmp compare( std::string const&, std::string const& );
 
