@@ -4,7 +4,7 @@
 #include <istream>
 #include <ostream>
 
-void merger::Merger::merge( std::istream &left, std::istream &right, std::ostream &out )
+void merger::Merger::merge( std::istream &left, std::istream &right, std::ostream &out ) const
 {
   std::string l_line, r_line;
   getline( left, l_line );
@@ -18,8 +18,8 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   }
 
   // using one extra separator
-  auto l_seps = separators( count_separators( l_line ) + 1 );
-  auto r_seps = separators( count_separators( r_line ) + 1 );
+  auto const l_seps = separators( count_separators( l_line ) + 1 );
+  auto const r_seps = separators( count_separators( r_line ) + 1 );
 
   // merge from both streams, till we reach end of one of them
   Cmp cmp;
@@ -57,7 +57,7 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   }
 }
 
-auto merger::Merger::compare( std::string const& left, std::string const& right ) -> Cmp
+auto merger::Merger::compare( std::string const& left, std::string const& right ) const -> Cmp
 {
   if (by_time) {
     using boost::posix_time::duration_from_string;
@@ -79,9 +79,9 @@ auto merger::Merger::compare( std::string const& left, std::string const& right 
   }
 }
 
-int merger::Merger::count_separators( std::string const& str )
+std::string::size_type merger::Merger::count_separators( std::string const& str ) const
 {
-  auto count = 0;
+  std::string::size_type count = 0;
   auto in_string = false;
 
   for (auto const& ch : str) {

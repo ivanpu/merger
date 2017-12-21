@@ -19,22 +19,22 @@ namespace merger {
 
     // merging of streams, using modified "merge-sort" algorithm:
     // "equal" lines will be merged into one
-    void merge( std::istream &left, std::istream &right, std::ostream &out );
+    void merge( std::istream &left, std::istream &right, std::ostream &out ) const;
 
   private:
-    char separator;
-    bool ignore_quotes, by_time, keep_empty;
-    std::size_t header;
+    const char separator;
+    const bool ignore_quotes, by_time, keep_empty;
+    const std::size_t header;
 
     // compare the lines by first field
     enum class Cmp { less, equal, greater };
-    Cmp compare( std::string const&, std::string const& );
+    Cmp compare( std::string const&, std::string const& ) const;
 
-    // counts number of separators, excluding the quoted ones
-    int count_separators( std::string const& );
+    // counts number of separators, optionally excluding the quoted ones
+    std::string::size_type count_separators( std::string const& ) const;
 
     // generates string full of separators
-    std::string separators( std::size_t n )
+    std::string separators( std::string::size_type n ) const
     { return std::string( n, separator ); }
   };
 
