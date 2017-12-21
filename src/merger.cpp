@@ -12,12 +12,12 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
 
   // skip && copy header
   for (std::size_t i = 0; i < header; ++i) {
-    out << l_line << "\n";
+    out << l_line << '\n';
     getline( left, l_line );
     getline( right, r_line );
   }
 
-  // using extra one comma as separator
+  // using one extra separator
   auto l_seps = separators( count_separators( l_line ) + 1 );
   auto r_seps = separators( count_separators( r_line ) + 1 );
 
@@ -26,18 +26,18 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   while (!left.eof() && !right.eof()) {
     if (l_line[0] == '"' || (cmp = compare( l_line, r_line )) == Cmp::equal) {
       // lines "equal" - merge them into one
-      out << l_line << separator << r_line << "\n";
+      out << l_line << separator << r_line << '\n';
       getline( left, l_line );
       getline( right, r_line );
 
     } else if (cmp == Cmp::less) {
       // left is previous in time - output only it
-      if (keep_empty) out << l_line << r_seps << "\n";
+      if (keep_empty) out << l_line << r_seps << '\n';
       getline( left, l_line );
 
     } else {
       // right is previous in time - output only it
-      if (keep_empty) out << l_seps << r_line << "\n";
+      if (keep_empty) out << l_seps << r_line << '\n';
       getline( right, r_line );
     }
   }
@@ -45,13 +45,13 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   if (keep_empty) {
     // dump remains of left file
     while (!left.eof()) {
-      out << l_line << r_seps << "\n";
+      out << l_line << r_seps << '\n';
       getline( left, l_line );
     }
 
     // dump remains of right file
     while (!right.eof()) {
-      out << l_seps << r_line << "\n";
+      out << l_seps << r_line << '\n';
       getline( right, r_line );
     }
   }

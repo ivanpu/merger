@@ -41,7 +41,7 @@ void merge( boost::program_options::variables_map const& vm )
     m.merge( left, right, out );
 
   } else {
-    // no output specified - using standart output
+    // no output specified - using standard output
     m.merge( left, right, std::cout );
   }
 }
@@ -62,15 +62,15 @@ int main( int argc, char* argv[] )
       ("ignore-quotes,q", "no special treatment for quoted text")
       ("date,d", "compare by date/time")
       ("drop-empty,D", "discard lines without match in all sources")
-      ("separator,s", po::value<char>()->default_value( ',' ), "set separator")
+      ("separator,s", po::value<char>()->default_value( ',' ), "set fields separator")
       ("header,H", po::value<std::size_t>()->default_value( 0 ), "size of the header (left header will also be copied to the output)")
-      ;
+    ;
     po::options_description hidden{ "Hidden options" };
     hidden.add_options()
       ("left", po::value<std::string>(), "left file")
       ("right", po::value<std::string>(), "right file")
       ("out", po::value<std::string>(), "output file")
-      ;
+    ;
 
     po::options_description cmdline;
     cmdline.add( desc ).add( hidden );
@@ -84,8 +84,11 @@ int main( int argc, char* argv[] )
 
     // check parameters
     if (vm.count( "help" )) {
-      std::cout << "Usage:\n  " << name << " [OPTIONS] LEFT-FILE RIGHT-FILE [OUTPUT]\n\n"
-        << desc << std::endl;
+      std::cout
+        << "Usage:\n  "
+        << name << " [OPTIONS] LEFT-FILE RIGHT-FILE [OUTPUT]\n\n"
+        << desc << std::endl
+      ;
       return 0;
     }
 
@@ -103,13 +106,13 @@ int main( int argc, char* argv[] )
     merge( vm );
 
   } catch (std::ios_base::failure const& e) {
-    // I/O error occured - terminating
+    // I/O error occurred - terminating
     // TODO: more informative message
     std::cerr << name << ": file I/O error: " << e.what() << std::endl;
     return 1;
 
   } catch (std::exception const& e) {
-    // some other error occured
+    // some other error occurred
     std::cerr << name << ": " << e.what() << std::endl;
     return 1;
   }

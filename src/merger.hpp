@@ -30,7 +30,7 @@ namespace merger {
     enum class Cmp { less, equal, greater };
     Cmp compare( std::string const&, std::string const& );
 
-    // counts number of separators, exulding the quoted ones
+    // counts number of separators, excluding the quoted ones
     int count_separators( std::string const& );
 
     // generates string full of separators
