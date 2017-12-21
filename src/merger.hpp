@@ -11,7 +11,7 @@ namespace merger {
   public:
     Merger( char sep, bool no_quotes, bool sort_by_time, bool drop_empty, std::size_t header_length ) :
       separator{ sep },
-      ignore_quotes{ no_quotes },
+      ignore_quotes{ (sep == '"') ? true : no_quotes },
       by_time{ sort_by_time },
       keep_empty{ !drop_empty },
       header{ header_length }
