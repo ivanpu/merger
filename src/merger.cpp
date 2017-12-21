@@ -42,16 +42,18 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
     }
   }
 
-  // dump remains of left file
-  while (!left.eof()) {
-    out << l_line << r_seps << "\n";
-    getline( left, l_line );
-  }
+  if (keep_empty) {
+    // dump remains of left file
+    while (!left.eof()) {
+      out << l_line << r_seps << "\n";
+      getline( left, l_line );
+    }
 
-  // dump remains of right file
-  while (!right.eof()) {
-    out << l_seps << r_line << "\n";
-    getline( right, r_line );
+    // dump remains of right file
+    while (!right.eof()) {
+      out << l_seps << r_line << "\n";
+      getline( right, r_line );
+    }
   }
 }
 
