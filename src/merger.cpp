@@ -83,16 +83,26 @@ std::string::size_type merger::Merger::count_separators( std::string const& str 
 {
   std::string::size_type count = 0;
   auto in_string = false;
+  auto escaped = false;
 
   for (auto const& ch : str) {
-    if (in_string) {
-      if (ch == '"') in_string = false;
+    if (ch == '\\') {
+      // this deals well with sequence of backslashes:
+      escaped = !escaped;
 
-    } else if (ch == '"' && !ignore_quotes) {
-      in_string = true;
+    } else if (!escaped) {
+      if (in_string) {
+        if (ch == '"') in_string = false;
 
-    } else if (ch == separator) {
-      ++count;
+      } else if (ch == '"' && !ignore_quotes) {
+        in_string = true;
+
+      } else if (ch == separator) {
+        ++count;
+      }
+
+    } else {
+      escaped = false;
     }
   }
 
