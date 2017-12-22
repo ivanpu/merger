@@ -28,7 +28,8 @@ void merge( boost::program_options::variables_map const& vm )
     vm.count( "ignore-quotes" ) > 0,
     vm.count( "date" ) > 0,
     vm.count( "drop-empty" ) > 0,
-    vm["header"].as<std::size_t>()
+    vm["header"].as<std::size_t>(),
+    vm["key"].as<std::size_t>() - 1
   };
 
   if (vm.count( "out" )) {
@@ -63,6 +64,7 @@ int main( int argc, char* argv[] )
       ("date,d", "compare by date/time")
       ("drop-empty,D", "discard lines without match in all sources")
       ("separator,s", po::value<char>()->default_value( ',' ), "set fields separator")
+      ("key,k", po::value<std::size_t>()->default_value( 1 ), "field used for comparison (count starts at 1)")
       ("header,H", po::value<std::size_t>()->default_value( 0 ), "size of the header (left header will also be copied to the output)")
     ;
     po::options_description hidden{ "Hidden options" };
@@ -99,6 +101,11 @@ int main( int argc, char* argv[] )
 
     if (!vm.count( "left" ) || !vm.count( "right" )) {
       std::cerr << name << ": at least 2 files have to be provided" << std::endl;
+      return 1;
+    }
+
+    if (vm["key"].as<std::size_t>() < 1) {
+      std::cerr << name << ": --key: fields counting starts with 1" << std::endl;
       return 1;
     }
 

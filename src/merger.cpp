@@ -1,8 +1,19 @@
 #include "merger.hpp"
+#include <boost/tokenizer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/lexical_cast.hpp>
 #include <istream>
 #include <ostream>
+#include <deque>
+#include <cassert>
+
+template <typename Container, typename SepF>
+void merger::Merger::split( Container &out, std::string const& line, SepF const& sep )
+{
+  boost::tokenizer<SepF> tokens{ line, sep };
+  out.clear();
+  std::copy( tokens.begin(), tokens.end(), std::back_inserter(out) );
+}
 
 void merger::Merger::merge( std::istream &left, std::istream &right, std::ostream &out ) const
 {
@@ -22,21 +33,45 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   auto const r_seps = separators( count_separators( r_line ) + 1 );
 
   // merge from both streams, till we reach end of one of them
-  Cmp cmp;
+  std::deque<std::string> l_fields, r_fields;
+  boost::char_separator<char> sep{ std::string{ separator }.c_str() };
+  boost::escaped_list_separator<char> sep_esc{ '\\', separator };
+
   while (!left.eof() && !right.eof()) {
-    if (l_line[0] == '"' || (cmp = compare( l_line, r_line )) == Cmp::equal) {
-      // lines "equal" - merge them into one
-      out << l_line << separator << r_line << '\n';
+    // split fields
+    if (ignore_quotes) {
+      split( l_fields, l_line, sep );
+      split( r_fields, r_line, sep );
+
+    } else {
+      split( l_fields, l_line, sep_esc );
+      split( r_fields, r_line, sep_esc );
+    }
+
+    // find lines order
+    auto skip_left  = l_fields.size() < key;
+    auto skip_right = r_fields.size() < key;
+
+    if (!skip_left && !skip_right) {
+      auto cmp = compare( l_fields[key], r_fields[key] );
+
+      skip_left  = cmp == Cmp::greater;
+      skip_right = cmp == Cmp::less;
+    }
+
+    // print relevant lines
+    if (skip_left == skip_right) {
+      if (!skip_left) out << l_line << separator << r_line << '\n';
       getline( left, l_line );
       getline( right, r_line );
 
-    } else if (cmp == Cmp::less) {
-      // left is previous in time - output only it
+    } else if (skip_right) {
+      assert( !skip_left );
       if (keep_empty) out << l_line << r_seps << '\n';
       getline( left, l_line );
 
     } else {
-      // right is previous in time - output only it
+      assert( skip_left && !skip_right );
       if (keep_empty) out << l_seps << r_line << '\n';
       getline( right, r_line );
     }
@@ -57,25 +92,28 @@ void merger::Merger::merge( std::istream &left, std::istream &right, std::ostrea
   }
 }
 
-auto merger::Merger::compare( std::string const& left, std::string const& right ) const -> Cmp
+template <typename T>
+auto merger::Merger::check( T const& l, T const& r ) -> Cmp
+{
+  if (l == r) return Cmp::equal;
+  if (l < r) return Cmp::less;
+  return Cmp::greater;
+}
+
+auto merger::Merger::compare( std::string const& l_field, std::string const& r_field ) const -> Cmp
 {
   if (by_time) {
-    using boost::posix_time::duration_from_string;
-
-    auto l_time = duration_from_string( left.substr( 0, left.find( separator ) ) );
-    auto r_time = duration_from_string( right.substr( 0, right.find( separator ) ) );
-
-    if (l_time == r_time) return Cmp::equal;
-    if (l_time < r_time) return Cmp::less;
-    return Cmp::greater;
+    namespace pt = boost::posix_time;
+    return check(
+      pt::duration_from_string( l_field ),
+      pt::duration_from_string( r_field )
+    );
 
   } else {
-    auto l_val = boost::lexical_cast<long>(left.substr( 0, left.find( separator ) ));
-    auto r_val = boost::lexical_cast<long>(right.substr( 0, right.find( separator ) ));
-
-    if (l_val == r_val) return Cmp::equal;
-    if (l_val < r_val) return Cmp::less;
-    return Cmp::greater;
+    return check(
+      boost::lexical_cast<long>( l_field ),
+      boost::lexical_cast<long>( r_field )
+    );
   }
 }
 

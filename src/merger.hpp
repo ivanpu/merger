@@ -9,12 +9,20 @@ namespace merger {
   class Merger
   {
   public:
-    Merger( char sep, bool no_quotes, bool sort_by_time, bool drop_empty, std::size_t header_length ) :
+    Merger(
+      char sep,
+      bool no_quotes,
+      bool sort_by_time,
+      bool drop_empty,
+      std::size_t header_length,
+      std::size_t key_field
+    ) :
       separator{ sep },
       ignore_quotes{ (sep == '"') ? true : no_quotes },
       by_time{ sort_by_time },
       keep_empty{ !drop_empty },
-      header{ header_length }
+      header{ header_length },
+      key{ key_field }
     {}
 
     // merging of streams, using modified "merge-sort" algorithm:
@@ -24,11 +32,17 @@ namespace merger {
   private:
     const char separator;
     const bool ignore_quotes, by_time, keep_empty;
-    const std::size_t header;
+    const std::size_t header, key;
 
-    // compare the lines by first field
+    // compare the fields
     enum class Cmp { less, equal, greater };
     Cmp compare( std::string const&, std::string const& ) const;
+
+    template <typename T>
+    static Cmp check( T const&, T const& );
+
+    template <typename Container, typename SepF>
+    static void split( Container&, std::string const&, SepF const& );
 
     // counts number of separators, optionally excluding the quoted ones
     std::string::size_type count_separators( std::string const& ) const;
