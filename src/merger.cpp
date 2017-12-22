@@ -7,12 +7,74 @@
 #include <deque>
 #include <cassert>
 
+namespace{
+  enum class Cmp { less, equal, greater };
+}
+
 template <typename Container, typename SepF>
 void merger::Merger::split( Container &out, std::string const& line, SepF const& sep )
 {
   boost::tokenizer<SepF> tokens{ line, sep };
   out.clear();
   std::copy( tokens.begin(), tokens.end(), std::back_inserter(out) );
+}
+
+template <typename T>
+auto merger::Merger::check( T const& l, T const& r )
+{
+  if (l == r) return Cmp::equal;
+  if (l < r) return Cmp::less;
+  return Cmp::greater;
+}
+
+auto merger::Merger::compare(
+  std::string const& l_field,
+  std::string const& r_field
+) const
+{
+  if (by_time) {
+    namespace pt = boost::posix_time;
+    return check(
+      pt::duration_from_string( l_field ),
+      pt::duration_from_string( r_field )
+    );
+
+  } else {
+    return check(
+      boost::lexical_cast<long>( l_field ),
+      boost::lexical_cast<long>( r_field )
+    );
+  }
+}
+
+auto merger::Merger::count_separators( std::string const& str ) const
+{
+  std::string::size_type count = 0;
+  auto in_string = false;
+  auto escaped = false;
+
+  for (auto const& ch : str) {
+    if (ch == '\\') {
+      // this deals well with sequence of backslashes:
+      escaped = !escaped;
+
+    } else if (!escaped) {
+      if (in_string) {
+        if (ch == '"') in_string = false;
+
+      } else if (ch == '"' && !ignore_quotes) {
+        in_string = true;
+
+      } else if (ch == separator) {
+        ++count;
+      }
+
+    } else {
+      escaped = false;
+    }
+  }
+
+  return count;
 }
 
 void merger::Merger::merge(
@@ -94,62 +156,4 @@ void merger::Merger::merge(
       getline( right, r_line );
     }
   }
-}
-
-template <typename T>
-auto merger::Merger::check( T const& l, T const& r ) -> Cmp
-{
-  if (l == r) return Cmp::equal;
-  if (l < r) return Cmp::less;
-  return Cmp::greater;
-}
-
-auto merger::Merger::compare(
-  std::string const& l_field,
-  std::string const& r_field
-) const -> Cmp
-{
-  if (by_time) {
-    namespace pt = boost::posix_time;
-    return check(
-      pt::duration_from_string( l_field ),
-      pt::duration_from_string( r_field )
-    );
-
-  } else {
-    return check(
-      boost::lexical_cast<long>( l_field ),
-      boost::lexical_cast<long>( r_field )
-    );
-  }
-}
-
-std::string::size_type merger::Merger::count_separators( std::string const& str ) const
-{
-  std::string::size_type count = 0;
-  auto in_string = false;
-  auto escaped = false;
-
-  for (auto const& ch : str) {
-    if (ch == '\\') {
-      // this deals well with sequence of backslashes:
-      escaped = !escaped;
-
-    } else if (!escaped) {
-      if (in_string) {
-        if (ch == '"') in_string = false;
-
-      } else if (ch == '"' && !ignore_quotes) {
-        in_string = true;
-
-      } else if (ch == separator) {
-        ++count;
-      }
-
-    } else {
-      escaped = false;
-    }
-  }
-
-  return count;
 }

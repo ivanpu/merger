@@ -35,20 +35,19 @@ namespace merger {
     const std::size_t header, key;
 
     // compare the fields
-    enum class Cmp { less, equal, greater };
-    Cmp compare( std::string const&, std::string const& ) const;
+    auto compare( std::string const&, std::string const& ) const;
 
     template <typename T>
-    static Cmp check( T const&, T const& );
+    static auto check( T const&, T const& );
 
     template <typename Container, typename SepF>
     static void split( Container&, std::string const&, SepF const& );
 
     // counts number of separators, optionally excluding the quoted ones
-    std::string::size_type count_separators( std::string const& ) const;
+    auto count_separators( std::string const& ) const;
 
     // generates string full of separators
-    std::string separators( std::string::size_type n ) const
+    auto separators( std::string::size_type n ) const
     { return std::string( n, separator ); }
   };
 
