@@ -63,9 +63,12 @@ int main( int argc, char* argv[] )
       ("ignore-quotes,q", "no special treatment for quoted text")
       ("date,d", "compare by date/time")
       ("drop-empty,D", "discard lines without match in all sources")
-      ("separator,s", po::value<char>()->default_value( ',' ), "set fields separator")
-      ("key,k", po::value<std::size_t>()->default_value( 1 ), "field used for comparison (count starts at 1)")
-      ("header,H", po::value<std::size_t>()->default_value( 0 ), "size of the header (left header will also be copied to the output)")
+      ("separator,s", po::value<char>()->default_value( ',' ),
+       "set fields separator")
+      ("key,k", po::value<std::size_t>()->default_value( 1 ),
+       "field used for comparison (count starts at 1)")
+      ("header,H", po::value<std::size_t>()->default_value( 0 ),
+       "size of the header (left header will also be copied to the output)")
     ;
     po::options_description hidden{ "Hidden options" };
     hidden.add_options()
@@ -81,7 +84,13 @@ int main( int argc, char* argv[] )
     p.add( "left", 1 ).add( "right", 1 ).add( "out", 1 );
 
     po::variables_map vm;
-    po::store( po::command_line_parser{ argc, argv }.options( cmdline ).positional( p ).run(), vm );
+    po::store(
+      po::command_line_parser{ argc, argv }
+      .options( cmdline )
+      .positional( p )
+      .run(),
+      vm
+    );
     po::notify( vm );
 
     // check parameters

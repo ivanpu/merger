@@ -15,7 +15,11 @@ void merger::Merger::split( Container &out, std::string const& line, SepF const&
   std::copy( tokens.begin(), tokens.end(), std::back_inserter(out) );
 }
 
-void merger::Merger::merge( std::istream &left, std::istream &right, std::ostream &out ) const
+void merger::Merger::merge(
+  std::istream &left,
+  std::istream &right,
+  std::ostream &out
+) const
 {
   std::string l_line, r_line;
   getline( left, l_line );
@@ -100,7 +104,10 @@ auto merger::Merger::check( T const& l, T const& r ) -> Cmp
   return Cmp::greater;
 }
 
-auto merger::Merger::compare( std::string const& l_field, std::string const& r_field ) const -> Cmp
+auto merger::Merger::compare(
+  std::string const& l_field,
+  std::string const& r_field
+) const -> Cmp
 {
   if (by_time) {
     namespace pt = boost::posix_time;
